@@ -50,7 +50,8 @@ substituicoes = {
     "Passagem Aérea (OBRIGATÓRIO JUSTIFICATIVA)":"Passagem Aérea",
     "Material de Limpeza - somente para casa alugada - obrigatório NOME DE QUEM AUTORIZOU":"Material de Limpeza",
     "Passagens de Ônibus (OBRIGATÓRIO JUSTIFICATIVA)":"Passagens de Ônibus",
-    "Locação de casa - OBRIGATÓRIO NOME DE QUEM AUTORIZOU":"Locação de casa"
+    "Locação de casa - OBRIGATÓRIO NOME DE QUEM AUTORIZOU":"Locação de casa",
+    "Outro (Obrigatório Justificativa)":"Outros"
 }
 df7["SUBCATEGORIA"] = df7["SUBCATEGORIA"].replace(substituicoes)
 
