@@ -55,8 +55,13 @@ substituicoes = {
 }
 df7["SUBCATEGORIA"] = df7["SUBCATEGORIA"].replace(substituicoes)
 
+# 8 - COLUNA PROJETOS EM ORDEM ALFABETICA PARA FILTRO
+df8 = df7
+df8["PROJETO"] = (df8["PROJETO"].str.strip()) # tira espaços da celulas da coluna PROJETO
+df8 = df8.sort_values(by="PROJETO", ascending=True)
+
 # ... - ULTIMA ATUALIZAÇÃO NO NOME DF
-df = df7
+df = df8
 
 ###################################################################################################
 
@@ -70,12 +75,18 @@ st.subheader("Filtros")
 col1, col2 = st.columns(2) # layout dos filtros
 
 with col1:
-    projetos = st.pills(
-        "Projetos:",
-        sorted(df["PROJETO"].dropna().unique().tolist()),
-        selection_mode = "multi"
-        #label_visibility = "collapsed"
+    projetos = st.multiselect(
+    "Projetos",
+    options=sorted(df["PROJETO"].dropna().unique()),
+    placeholder="Selecione o projeto"
     )
+
+    # projetos = st.pills(
+    #     "Projetos:",
+    #     sorted(df["PROJETO"].dropna().unique().tolist()),
+    #     selection_mode = "multi"
+    #     #label_visibility = "collapsed"
+    # )
 
 with col2:
     meses = st.pills(
