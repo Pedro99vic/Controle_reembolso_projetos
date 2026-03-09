@@ -55,10 +55,10 @@ substituicoes = {
 }
 df7["SUBCATEGORIA"] = df7["SUBCATEGORIA"].replace(substituicoes)
 
-# 8 - COLUNA PROJETOS EM ORDEM ALFABETICA PARA FILTRO
+# # 8 - COLUNA PROJETOS EM ORDEM ALFABETICA PARA FILTRO
 df8 = df7
 df8["PROJETO"] = (df8["PROJETO"].str.strip()) # tira espaços da celulas da coluna PROJETO
-df8 = df8.sort_values(by="PROJETO", ascending=True)
+# df8 = df8.sort_values(by=["PROJETO","MES_ANO"], ascending=True)
 
 # ... - ULTIMA ATUALIZAÇÃO NO NOME DF
 df = df8
@@ -67,7 +67,7 @@ df = df8
 
 # CONFIGURAÇÃO DA PÁGINA
 st.set_page_config(layout="wide")
-st.title("📊 Dashboard Controle de Gastos e Reembolsos - PROJEXA")
+st.title("📊 Controle de Gastos e Reembolsos - PROJEXA")
 
 # FILTROS (PILLS STYLE)
 st.subheader("Filtros")
@@ -80,13 +80,6 @@ with col1:
     options=sorted(df["PROJETO"].dropna().unique()),
     placeholder="Selecione o projeto"
     )
-
-    # projetos = st.pills(
-    #     "Projetos:",
-    #     sorted(df["PROJETO"].dropna().unique().tolist()),
-    #     selection_mode = "multi"
-    #     #label_visibility = "collapsed"
-    # )
 
 with col2:
     meses = st.pills(
