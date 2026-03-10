@@ -9,40 +9,28 @@ import locale
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8') # locale - Brasil
 
 # LEITURA DA BASE DE DADOS
-df = pd.read_excel(r"C:\Users\Projexa\OneDrive - projexa.com.br\Área de Trabalho\Estudos_python\1.Dashboard_reembolso_projetos\data\05-03-2026 15_47_21.xlsx")
+df = pd.read_excel(r"C:\Users\Projexa\OneDrive - projexa.com.br\Área de Trabalho\Estudos_python\1.Dashboard_reembolso_projetos\data\base_de_dados_geral.xlsx")
 
 ###################################################################################################
 
 # TRATAMENTO DE DADOS
 
-# 1 - EXCLUI COLUNAS DESNECESSÁRIAS
-df1 = df.drop(['E-MAIL', 'CPF', 'TIME', 'MOEDA', 'NÃO REEMBOLSÁVEL','DATA DE ENVIO', 
-               'DATA DE CONCLUSÃO', 'CONCLUIDORES', 
-               'URL DO COMPROVANTE', 'URL DO RELATÓRIO', 'MOTIVO 1', 
-               'MOTIVO 2','MOTIVO 3', 'MOTIVO 4'], axis=1)
+df = df.rename(columns={'# RELATÓRIO':'RELATÓRIO',
+                        'DATA DA DESPESA':'MES_ANO'}) # Correção dos nomes de algumas colunas
 
-# 2 - CORREÇÃO DE NOME COLUNA
-df2 = df1.rename(columns={'# RELATÓRIO':'RELATÓRIO', 'DATA DA DESPESA':'MES_ANO'})
+df = df[['RELATÓRIO','USUÁRIO','MES_ANO',
+         'VALOR','CATEGORIA','SUBCATEGORIA',
+         'PROJETO','DESCRIÇÃO','APROVADORES']] # Seleção de colunas que serão utilizadas
 
-# 3 - REORGANIZAÇÃO DAS CONLUNAS
-df3 = df2[['RELATÓRIO','USUÁRIO','MES_ANO','VALOR','CATEGORIA','SUBCATEGORIA','PROJETO','DESCRIÇÃO','APROVADORES']]
+df["MES_ANO"] = pd.to_datetime(df["MES_ANO"], format="%d/%m/%Y") # Cria coluna mes_ano
+df["MES_ANO"] = df["MES_ANO"].dt.strftime("%m/%Y")
 
-# 4 - SUBSTITUI NaN POR NADA
-#   - GARANTE QUE COLUNA VALOR SEJA BRL - USANDO BIBLIOTECA LOCALE 
-df4 = df3.fillna("Outros")
-#df4["VALOR"] = df4["VALOR"].apply(lambda x: locale.currency(x, grouping=True))
+# 3 - SUBSTITUI NaN POR "Outros"
+df = df.fillna("Outros") # Subistitui NaN por "Outros"
+df["VALOR"] = pd.to_numeric(df["VALOR"], errors="coerce") # Garante valores numéricos
+df["PROJETO"] = (df["PROJETO"].str.strip()) # Tira espaços da celulas da coluna PROJETO
 
-# 5 - CRIA COLUNA MES_ANO
-df5 = df4
-df5["MES_ANO"] = pd.to_datetime(df5["MES_ANO"], format="%d/%m/%Y")
-df5["MES_ANO"] = df5["MES_ANO"].dt.strftime("%m/%Y")
-
-# 6 - GARANTE VALORES NUMERICOS
-df6 = df5
-df6["VALOR"] = pd.to_numeric(df6["VALOR"], errors="coerce")
-
-# 7 - SUBISTITUI TEXTOS DESNECESSÁRIOS DA COLUNA "SUBCATEGORIA"
-df7 = df6
+# 6 - SUBISTITUI TEXTOS DESNECESSÁRIOS DA COLUNA "SUBCATEGORIA"
 substituicoes = {
     "Hotel (OBRIGATÓRIO JUSTIFICATIVA)": "Hotel",
     "Lavanderia - obrigatório inserir o período": "Lavanderia",
@@ -53,15 +41,7 @@ substituicoes = {
     "Locação de casa - OBRIGATÓRIO NOME DE QUEM AUTORIZOU":"Locação de casa",
     "Outro (Obrigatório Justificativa)":"Outros"
 }
-df7["SUBCATEGORIA"] = df7["SUBCATEGORIA"].replace(substituicoes)
-
-# # 8 - COLUNA PROJETOS EM ORDEM ALFABETICA PARA FILTRO
-df8 = df7
-df8["PROJETO"] = (df8["PROJETO"].str.strip()) # tira espaços da celulas da coluna PROJETO
-# df8 = df8.sort_values(by=["PROJETO","MES_ANO"], ascending=True)
-
-# ... - ULTIMA ATUALIZAÇÃO NO NOME DF
-df = df8
+df["SUBCATEGORIA"] = df["SUBCATEGORIA"].replace(substituicoes)
 
 ###################################################################################################
 
