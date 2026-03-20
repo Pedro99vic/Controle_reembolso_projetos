@@ -35,11 +35,11 @@ with col1:
     )
 
 with col2:
-    meses = st.pills(
+    meses = st.multiselect(
         "Meses:", 
-        df["MES_ANO"].dropna().unique(),
-        selection_mode = "multi"
-        #label_visibility = "collapsed"
+        options=sorted(df["MES_ANO"].dropna().unique()),
+        default=df["MES_ANO"].unique(),
+        placeholder="Data"
     )
 
 # TRATAMENTO SE NADA FOR SELECIONADO
